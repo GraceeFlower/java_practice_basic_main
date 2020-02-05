@@ -33,7 +33,7 @@ public class App {
    */
   public static String bestCharge(String selectedItems) {
     // 此处补全代码
-    ArrayList menu = getMenu(selectedItems);
+    ArrayList<Item> menu = getMenu(selectedItems);
     int[] subtotals = getSubtotal(menu);
     String receipt = printReceipt(menu, subtotals);
 
@@ -57,26 +57,25 @@ public class App {
     return menu;
   }
 
-  public static int[] getSubtotal(ArrayList menu) {
+  public static int[] getSubtotal(ArrayList<Item> menu) {
     int[] subtotals = new int[menu.size()];
 
     for (int i = 0; i < subtotals.length; i++) {
-      String countStr = ((Item)menu.get(i)).count;
+      String countStr = menu.get(i).count;
       Double count = Double.valueOf(countStr);
-      int subtotal = (int) (count * ((Item) menu.get(i)).price);
+      int subtotal = (int) (count *  menu.get(i).price);
       subtotals[i] = subtotal;
     }
     return subtotals;
   }
 
-  public static String printReceipt(ArrayList menu, int[] subtotals) {
+  public static String printReceipt(ArrayList<Item> menu, int[] subtotals) {
     String receipt = "============= 订餐明细 =============\n";
     for (int i = 0; i < menu.size(); i++) {
-//      String name =
-      receipt = receipt + ((Item)menu.get(i)).name + " x "
-          + ((Item)menu.get(i)).count + " = " + subtotals[i] + "元\n";
+      receipt = receipt + menu.get(i).name + " x "
+          + menu.get(i).count + " = " + subtotals[i] + "元\n";
     }
-    receipt += "-----------------------------------\n";
+    receipt += "===================================";
     return receipt;
   }
 
