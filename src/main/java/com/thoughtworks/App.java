@@ -1,6 +1,6 @@
 package com.thoughtworks;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class App {
@@ -13,13 +13,13 @@ public class App {
     System.out.println(summary);
   }
 
-  class item {
+  static class Item {
     String id;
     String name;
-    int count;
-    double price;
+    String count;
+    Double price;
 
-    public item(String id, String name, int count, double price) {
+    public Item(String id, String name, String count, Double price) {
       this.id = id;
       this.name = name;
       this.count = count;
@@ -33,33 +33,52 @@ public class App {
    */
   public static String bestCharge(String selectedItems) {
     // 此处补全代码
-    String[] items = selectedItems.split(",");
-    String[] ids = getItemIds();
-    String[] itemNames = new String[items.length];
-    String[] itemCounts = new String[items.length];
-    double[] itemPrices = new double[items.length];
+    ArrayList menu = getMenu(selectedItems);
+    int[] subtotals = getSubtotal(menu);
+    String receipt = printReceipt(menu, subtotals);
 
-    for (int i = 0, j = 0; i < items.length; i++) {
-      String itemId = items[i].split(" x ")[0];
-      String itemCount = items[i].split(" x ")[1];
-      itemCounts[0] = itemCount;
-      for (int k = 0; k < ids.length; k++) {
-        if (itemId.equals(ids[k])) {
-          itemNames[j] = getItemNames()[k];
-          itemPrices[j] = getItemPrices()[k];
-          j++;
+    return receipt;
+  }
+
+  public static ArrayList getMenu(String selectedItems) {
+    ArrayList<Item> menu = new ArrayList<Item>();
+    String[] items = selectedItems.split(",");
+    for (int i = 0; i < items.length; i++) {
+      String[] newItem = items[i].split(" x ");
+      for (int k = 0; k < getItemIds().length; k++) {
+        if (newItem[0].equals(getItemIds()[k])) {
+          Item itemInfo = new Item(newItem[0], getItemNames()[k],
+              newItem[1], getItemPrices()[k]);
+          menu.add(itemInfo);
           break;
         }
       }
     }
-    return Arrays.toString(itemNames);
+    return menu;
   }
 
-  public static String getItemId() {
-    String itemId = "0";
-    return itemId;
+  public static int[] getSubtotal(ArrayList menu) {
+    int[] subtotals = new int[menu.size()];
+
+    for (int i = 0; i < subtotals.length; i++) {
+      String countStr = ((Item)menu.get(i)).count;
+      Double count = Double.valueOf(countStr);
+      int subtotal = (int) (count * ((Item) menu.get(i)).price);
+      subtotals[i] = subtotal;
+    }
+    return subtotals;
   }
 
+  public static String printReceipt(ArrayList menu, int[] subtotals) {
+    String receipt = "============= 订餐明细 =============\n";
+    for (int i = 0; i < menu.size(); i++) {
+//      String name =
+      receipt = receipt + ((Item)menu.get(i)).name + " x "
+          + ((Item)menu.get(i)).count + " = " + subtotals[i] + "元\n";
+    }
+    receipt += "-----------------------------------\n";
+    return receipt;
+  }
 
   /**
    * 获取每个菜品依次的编号
@@ -89,49 +108,3 @@ public class App {
     return new String[]{"ITEM0001", "ITEM0022"};
   }
 }
-
-
-//public class Item {
-//  String id;
-//  String name;
-//  Double prices;
-//
-//  public Item(String id, String name, Double prices) {
-//    this.id = id;
-//    this.name = name;
-//    this.prices = prices;
-//  }
-//
-//  @Override
-//  public String toString() {
-//    return "Item{" +
-//        "id='" + id + '\'' +
-//        ", name='" + name + '\'' +
-//        ", prices=" + prices +
-//        '}';
-//  }
-//
-//  public String getId() {
-//    return id;
-//  }
-//
-//  public void setId(String id) {
-//    this.id = id;
-//  }
-//
-//  public String getName() {
-//    return name;
-//  }
-//
-//  public void setName(String name) {
-//    this.name = name;
-//  }
-//
-//  public Double getPrices() {
-//    return prices;
-//  }
-//
-//  public void setPrices(Double prices) {
-//    this.prices = prices;
-//  }
-//}
