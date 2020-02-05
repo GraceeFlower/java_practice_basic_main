@@ -71,12 +71,70 @@ public class App {
 
   public static String printReceipt(ArrayList<Item> menu, int[] subtotals) {
     String receipt = "============= 订餐明细 =============\n";
+
     for (int i = 0; i < menu.size(); i++) {
       receipt = receipt + menu.get(i).name + " x "
           + menu.get(i).count + " = " + subtotals[i] + "元\n";
     }
     receipt += "===================================";
     return receipt;
+  }
+
+  public static String calculatePrice(ArrayList<Item> menu, int[] subtotals) {
+    int totalPrice = 0;
+    for (int i: subtotals) {
+      totalPrice += i;
+    }
+    int fullOffPrice = calculateMoneyOff(totalPrice);
+    ArrayList<Integer> halfOffPrice = calculateRateDiscount(menu, totalPrice);
+    int realPrice = totalPrice;
+    String discountMessage = "";
+
+    if (halfOffPrice.get(halfOffPrice.size() - 1) < fullOffPrice) {
+      realPrice = halfOffPrice.get(halfOffPrice.size() - 1);
+      discountMessage = "指定菜品半价(";
+      for (int i = 0; i < halfOffPrice.size() - 2; i++) {
+        discountMessage += menu.get(halfOffPrice.get(i)).name + (i  == halfOffPrice.size() - 3 ? "" : "，");
+      }
+      discountMessage += ")，省" + halfOffPrice.get(halfOffPrice.size() - 2) + "元\n";
+    } else {
+      discountMessage = "满30减6元，省6元\n";
+      realPrice = fullOffPrice;
+    }
+    String message = "-----------------------------------\n";
+    if (realPrice != totalPrice) {
+      message += "使用优惠:\n" + discountMessage
+          + "-----------------------------------\n";
+    }
+    message += "总计：" + realPrice + "元\n";
+    return message;
+  }
+
+  public static int calculateMoneyOff(int realMoney) {
+    int discountPrice = realMoney;
+    if (realMoney >= 30) {
+      discountPrice -= 6;
+    }
+    return discountPrice;
+  }
+
+  public static ArrayList<Integer> calculateRateDiscount(ArrayList<Item> menu, int realMoney) {
+    ArrayList<Integer> discountInfo = new ArrayList<>();
+    int discountPrice = realMoney;
+    for (int i = 0; i < menu.size(); i++) {
+      if (menu.get(i).id.equals(getHalfPriceIds()[0])) {
+        discountInfo.add(0);
+        double moneyOff =  menu.get(i).price / 2;
+        discountPrice -= (int) moneyOff;
+      } else if (menu.get(i).id.equals(getHalfPriceIds()[1])) {
+        discountInfo.add(2);
+        double moneyOff =  menu.get(i).price / 2;
+        discountPrice -= (int) moneyOff;
+      }
+    }
+    discountInfo.add(realMoney - discountPrice);
+    discountInfo.add(discountPrice);
+    return discountInfo;
   }
 
   /**
