@@ -42,8 +42,8 @@ public class App {
   public static ArrayList<Item> getMenu(String selectedItems) {
     ArrayList<Item> menu = new ArrayList<Item>();
     String[] items = selectedItems.split(",");
-    for (int i = 0; i < items.length; i++) {
-      String[] newItem = items[i].split(" x ");
+    for (String item : items) {
+      String[] newItem = item.split(" x ");
       for (int k = 0; k < getItemIds().length; k++) {
         if (newItem[0].equals(getItemIds()[k])) {
           Item itemInfo = new Item(newItem[0], getItemNames()[k],
@@ -61,7 +61,7 @@ public class App {
 
     for (int i = 0; i < subtotals.length; i++) {
       String countStr = menu.get(i).count;
-      double count = Double.valueOf(countStr);
+      double count = Double.parseDouble(countStr);
       int subtotal = (int) (count *  menu.get(i).price);
       subtotals[i] = subtotal;
     }
