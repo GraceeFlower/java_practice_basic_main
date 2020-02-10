@@ -12,41 +12,27 @@ public class App {
     String summary = bestCharge(selectedItems);
     System.out.println(summary);
   }
-
-  static class Item {
-    String id;
-    String name;
-    String count;
-    double price;
-
-    public Item(String id, String name, String count, double price) {
-      this.id = id;
-      this.name = name;
-      this.count = count;
-      this.price = price;
-    }
-  }
   /**
    * 接收用户选择的菜品和数量，返回计算后的汇总信息
    *
    * @param selectedItems 选择的菜品信息
    */
   public static String bestCharge(String selectedItems) {
-    ArrayList<Item> menu = getMenu(selectedItems);
+    ArrayList<Dish> menu = getMenu(selectedItems);
     int[] subtotals = getSubtotal(menu);
     String receipt = printReceipt(menu, subtotals);
 
     return receipt;
   }
 
-  public static ArrayList<Item> getMenu(String selectedItems) {
-    ArrayList<Item> menu = new ArrayList<Item>();
+  public static ArrayList<Dish> getMenu(String selectedItems) {
+    ArrayList<Dish> menu = new ArrayList<>();
     String[] items = selectedItems.split(",");
     for (String item : items) {
       String[] newItem = item.split(" x ");
       for (int k = 0; k < getItemIds().length; k++) {
         if (newItem[0].equals(getItemIds()[k])) {
-          Item itemInfo = new Item(newItem[0], getItemNames()[k],
+          Dish itemInfo = new Dish(newItem[0], getItemNames()[k],
               newItem[1], getItemPrices()[k]);
           menu.add(itemInfo);
           break;
@@ -56,7 +42,7 @@ public class App {
     return menu;
   }
 
-  public static int[] getSubtotal(ArrayList<Item> menu) {
+  public static int[] getSubtotal(ArrayList<Dish> menu) {
     int[] subtotals = new int[menu.size()];
 
     for (int i = 0; i < subtotals.length; i++) {
@@ -68,7 +54,7 @@ public class App {
     return subtotals;
   }
 
-  public static String printReceipt(ArrayList<Item> menu, int[] subtotals) {
+  public static String printReceipt(ArrayList<Dish> menu, int[] subtotals) {
     String receipt = "============= 订餐明细 =============\n";
     String discountMsg = calculatePrice(menu, subtotals);
 
@@ -79,8 +65,8 @@ public class App {
     receipt += discountMsg + "===================================";
     return receipt;
   }
-
-  public static String calculatePrice(ArrayList<Item> menu, int[] subtotals) {
+  
+  public static String calculatePrice(ArrayList<Dish> menu, int[] subtotals) {
     int totalPrice = 0;
     for (int i: subtotals) {
       totalPrice += i;
@@ -117,7 +103,7 @@ public class App {
     return discountPrice;
   }
 
-  public static ArrayList<Integer> calculateRateDiscount(ArrayList<Item> menu, int realMoney) {
+  public static ArrayList<Integer> calculateRateDiscount(ArrayList<Dish> menu, int realMoney) {
     ArrayList<Integer> discountInfo = new ArrayList<>();
     int discountPrice = realMoney;
 
