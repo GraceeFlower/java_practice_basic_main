@@ -55,15 +55,14 @@ public class App {
   }
 
   public static String printReceipt(ArrayList<Dish> menu, int[] subtotals) {
-    String receipt = "============= 订餐明细 =============\n";
+    StringBuilder receipt = new StringBuilder("============= 订餐明细 =============\n");
     String discountMsg = calculatePrice(menu, subtotals);
 
     for (int i = 0; i < menu.size(); i++) {
-      receipt = receipt + menu.get(i).name + " x "
-          + menu.get(i).count + " = " + subtotals[i] + "元\n";
+      receipt.append(menu.get(i).name).append(" x ").append(menu.get(i).count).append(" = ").append(subtotals[i]).append("元\n");
     }
-    receipt += discountMsg + "===================================";
-    return receipt;
+    receipt.append(discountMsg).append("===================================");
+    return receipt.toString();
   }
   
   public static String calculatePrice(ArrayList<Dish> menu, int[] subtotals) {
@@ -74,16 +73,18 @@ public class App {
     int fullOffPrice = calculateMoneyOff(totalPrice);
     ArrayList<Integer> halfOffPrice = calculateRateDiscount(menu, totalPrice);
     int realPrice = totalPrice;
-    String discountMessage = "";
+    StringBuilder discountMessage = new StringBuilder();
 
     if (halfOffPrice.get(halfOffPrice.size() - 1) < fullOffPrice) {
       realPrice = halfOffPrice.get(halfOffPrice.size() - 1);
       for (int i = 0; i < halfOffPrice.size() - 2; i++) {
-        discountMessage += menu.get(halfOffPrice.get(i)).name + (i  == halfOffPrice.size() - 3 ? "" : "，");
+        discountMessage.append(menu.get(halfOffPrice.get(i)).name)
+            .append(i == halfOffPrice.size() - 3 ? "" : "，");
       }
-      discountMessage = "指定菜品半价(" + discountMessage + ")，省" + halfOffPrice.get(halfOffPrice.size() - 2) + "元\n";
+      discountMessage = new StringBuilder("指定菜品半价(" + discountMessage + ")，省"
+          + halfOffPrice.get(halfOffPrice.size() - 2) + "元\n");
     } else {
-      discountMessage = "满30减6元，省6元\n";
+      discountMessage = new StringBuilder("满30减6元，省6元\n");
       realPrice = fullOffPrice;
     }
     String message = "-----------------------------------\n";
